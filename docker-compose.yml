@@ -1,0 +1,25 @@
+
+services:
+  # Service de validation externe (Outil DevOps)
+  password-scorer:
+    build:
+      context: ./scorer-service
+    container_name: password-scorer
+    networks:
+      - generator-net
+
+  # Application principale
+  password-generator:
+    build:
+      context: .
+    container_name: password-generator
+    stdin_open: true
+    tty: true
+    depends_on:
+      - password-scorer
+    networks:
+      - generator-net
+
+networks:
+  generator-net:
+    driver: bridge
