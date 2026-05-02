@@ -53,6 +53,23 @@ public class StrengthChecker {
      */
     private StrengthResult checkLocal(String password) {
         int score = (password.length() >= 12) ? 3 : 2;
-        return new StrengthResult(score, "Audit Local", "inconnu", false);
+        String label = switch (score) {
+            case 0 -> "Très faible";
+            case 1 -> "Faible";
+            case 2 -> "Moyen";
+            case 3 -> "Fort";
+            default -> "Très fort";
+        };
+
+        // Simulation d'un temps de crack parlant pour le mode dégradé
+        String crackTime = switch (score) {
+            case 0, 1 -> "quelques secondes";
+            case 2 -> "quelques minutes";
+            case 3 -> "plusieurs heures";
+            case 4 -> "plusieurs mois";
+            default -> "plusieurs années";
+        };
+
+        return new StrengthResult(score, label, crackTime + " (estimation locale)", false);
     }
 }
