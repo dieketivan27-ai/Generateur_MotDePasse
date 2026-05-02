@@ -29,6 +29,7 @@ public class CliParser {
                 case "-l" -> length = Integer.parseInt(args[++i]);
                 case "-u" -> upper = true;
                 case "-lo" -> lower = true;
+                case "-nlo" -> lower = false;
                 case "-d" -> digits = true;
                 case "-s" -> symbols = true;
                 case "-n" -> count = Integer.parseInt(args[++i]);
@@ -49,28 +50,53 @@ public class CliParser {
     private CliConfig runInteractive() {
         try {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("=== Générateur de Mots de Passe (Mode Interactif) ===");
+            System.out.println("\n=== GÉNÉRATEUR DE MOTS DE PASSE ===");
+            System.out.println("Prêt pour la configuration. Appuyez sur [ENTRÉE] pour débuter...");
+            System.out.flush();
             
-            System.out.print("Longueur (défaut 12) : ");
+            // On attend une première validation pour synchroniser le terminal Docker
+            if (scanner.hasNextLine()) {
+                scanner.nextLine();
+            }
+
+            System.out.println("\n--- PARAMÈTRES DE GÉNÉRATION ---");
+            
+            System.out.println("1. Longueur du mot de passe (4-128) [défaut 12] :");
+            System.out.print("Saisie : ");
+            System.out.flush();
             String lStr = scanner.hasNextLine() ? scanner.nextLine() : "";
             int length = lStr.trim().isEmpty() ? 12 : Integer.parseInt(lStr.trim());
 
-            System.out.print("Inclure Majuscules ? (o/n) : ");
+            System.out.println("2. Inclure des Majuscules ? (o/n) [défaut n] :");
+            System.out.print("Saisie : ");
+            System.out.flush();
             boolean upper = scanner.hasNextLine() && scanner.nextLine().equalsIgnoreCase("o");
 
-            System.out.print("Inclure Chiffres ? (o/n) : ");
+            System.out.println("3. Inclure des Minuscules ? (o/n) [défaut o] :");
+            System.out.print("Saisie : ");
+            System.out.flush();
+            String loStr = scanner.hasNextLine() ? scanner.nextLine() : "o";
+            boolean lower = loStr.trim().isEmpty() || loStr.equalsIgnoreCase("o");
+
+            System.out.println("4. Inclure des Chiffres ? (o/n) [défaut n] :");
+            System.out.print("Saisie : ");
+            System.out.flush();
             boolean digits = scanner.hasNextLine() && scanner.nextLine().equalsIgnoreCase("o");
 
-            System.out.print("Inclure Symboles ? (o/n) : ");
+            System.out.println("5. Inclure des Symboles ? (o/n) [défaut n] :");
+            System.out.print("Saisie : ");
+            System.out.flush();
             boolean symbols = scanner.hasNextLine() && scanner.nextLine().equalsIgnoreCase("o");
 
-            System.out.print("Nombre de mots de passe ? (défaut 1) : ");
+            System.out.println("6. Nombre de mots de passe à générer [défaut 1] :");
+            System.out.print("Saisie : ");
+            System.out.flush();
             String nStr = scanner.hasNextLine() ? scanner.nextLine() : "";
             int count = nStr.trim().isEmpty() ? 1 : Integer.parseInt(nStr.trim());
 
-            return new CliConfig(length, upper, true, digits, symbols, count, false);
+            return new CliConfig(length, upper, lower, digits, symbols, count, false);
         } catch (Exception e) {
-            System.out.println("[WARN] Mode interactif indisponible ou interrompu. Utilisation des réglages par défaut.");
+            System.out.println("\n[WARN] Entrée invalide ou interruption. Utilisation des réglages par défaut (12 caractères, sécurisé).");
             return new CliConfig(12, true, true, true, false, 1, false);
         }
     }
@@ -81,6 +107,7 @@ public class CliParser {
         System.out.println("  -l <taille>  Longueur du mot de passe (4-128)");
         System.out.println("  -u           Inclure des majuscules");
         System.out.println("  -lo          Inclure des minuscules (actif par défaut)");
+        System.out.println("  -nlo         Exclure les minuscules");
         System.out.println("  -d           Inclure des chiffres");
         System.out.println("  -s           Inclure des symboles");
         System.out.println("  -n <nombre>  Nombre de mots de passe (mode rafale)");
