@@ -20,6 +20,7 @@ public class StrengthChecker {
                 .connectTimeout(Duration.ofSeconds(2))
                 .build();
     }
+    
 
     public StrengthResult check(String password) {
         try {
