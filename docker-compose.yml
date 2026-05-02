@@ -1,12 +1,11 @@
-
 services:
   # Service de validation externe (Outil DevOps)
-  # password-scorer:
-  #   build:
-  #     context: ./scorer-service
-  #   container_name: password-scorer
-  #   networks:
-  #     - generator-net
+  password-scorer:
+    build:
+      context: ./scorer-service
+    container_name: password-scorer
+    networks:
+      - generator-net
 
   # Application principale
   password-generator:
