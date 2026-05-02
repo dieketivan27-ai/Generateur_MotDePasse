@@ -6,6 +6,7 @@ Cet outil permet de générer des mots de passe sécurisés selon des critères 
 ## 2. Analyse Technique (DevOps)
 Le projet utilise une architecture **micro-services** conteneurisée :
 *   **Conteneur `password-generator`** : Application CLI Java 21 qui gère la logique de génération et l'interface utilisateur.
+*   **Conteneur `password-scorer`** : Service de validation externe (Java 21 + zxcvbn4j). Il agit comme un oracle de sécurité indépendant.
 *   **Communication** : Le générateur communique avec le validateur via des requêtes **HTTP REST** sur le réseau isolé Docker.
 *   **Interopérabilité** : Si le service de validation est indisponible, l'application bascule sur un mode dégradé (audit local) pour assurer la continuité de service.
 
